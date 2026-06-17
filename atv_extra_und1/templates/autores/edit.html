@@ -1,0 +1,25 @@
+<h1>Editar Autor</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    <input type="text"
+           name="nome"
+           value="{{ autor.nome }}">
+
+    <br><br>
+
+    <input type="email"
+           name="email"
+           value="{{ autor.email }}">
+
+    <br><br>
+
+    <button type="submit">
+        Atualizar
+    </button>
+</form>
+
+<br>
+
+<a href="/autores/">Voltar</a>

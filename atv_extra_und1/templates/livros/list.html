@@ -1,0 +1,29 @@
+<h1>Livros</h1>
+
+<a href="/livros/novo/">
+    Novo Livro
+</a>
+
+<hr>
+
+<table border="1">
+
+<tr>
+    <th>Título</th>
+    <th>Páginas</th>
+    <th>Autor</th>
+</tr>
+
+{% for livro in livros %}
+<tr>
+    <td>{{ livro.titulo }}</td>
+    <td>{{ livro.paginas }}</td>
+    <td>{{ livro.autor.nome }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<br>
+
+<a href="/">Voltar</a>
