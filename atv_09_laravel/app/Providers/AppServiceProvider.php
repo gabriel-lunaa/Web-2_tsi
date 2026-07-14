@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Providers;
+
+use App\Models\Book;
+use App\Models\Author;
+use App\Models\Category;
+use App\Models\Publisher;
+use App\Models\User;
+
+use App\Policies\BookPolicy;
+use App\Policies\AuthorPolicy;
+use App\Policies\CategoryPolicy;
+use App\Policies\PublisherPolicy;
+use App\Policies\UserPolicy;
+
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+    }
+
+    public function boot(): void
+    {
+        Gate::policy(Book::class, BookPolicy::class);
+        Gate::policy(Author::class, AuthorPolicy::class);
+        Gate::policy(Category::class, CategoryPolicy::class);
+        Gate::policy(Publisher::class, PublisherPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
+    }
+}

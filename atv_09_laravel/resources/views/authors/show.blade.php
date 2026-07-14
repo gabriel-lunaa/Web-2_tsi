@@ -1,0 +1,21 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+
+    <h1>Detalhes do Autor</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Nome:</strong> {{ $author->name }}</p>
+            <p><strong>Email:</strong> {{ $author->email }}</p>
+            <p><strong>Data de nascimento:</strong> {{ $author->birth_date }}</p>
+        </div>
+    </div>
+
+    <a href="{{ route('authors.index') }}" class="btn btn-secondary mt-3">
+        Voltar
+    </a>
+
+</div>
+@endsection
