@@ -15,18 +15,14 @@ class AuthorController extends Controller
 
     public function create()
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('create', Author::class);
 
         return view('authors.create');
     }
 
     public function store(Request $request)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('create', Author::class);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -44,18 +40,14 @@ class AuthorController extends Controller
 
     public function edit(Author $author)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('update', $author);
 
         return view('authors.edit', compact('author'));
     }
 
     public function update(Request $request, Author $author)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('update', $author);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -68,11 +60,10 @@ class AuthorController extends Controller
 
     public function destroy(Author $author)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('delete', $author);
         
         $author->delete();
+        
         return redirect()->route('authors.index');
     }
 }

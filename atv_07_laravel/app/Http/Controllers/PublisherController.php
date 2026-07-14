@@ -15,18 +15,14 @@ class PublisherController extends Controller
 
     public function create()
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('create', Publisher::class);
 
         return view('publishers.create');
     }
 
     public function store(Request $request)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+         $this->authorize('create', Publisher::class);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -44,18 +40,15 @@ class PublisherController extends Controller
 
     public function edit(Publisher $publisher)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('update', $publisher);
+
 
         return view('publishers.edit', compact('publisher'));
     }
 
     public function update(Request $request, Publisher $publisher)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('update', $publisher);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -68,9 +61,7 @@ class PublisherController extends Controller
 
     public function destroy(Publisher $publisher)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('delete', $publisher);
         
         $publisher->delete();
         return redirect()->route('publishers.index');

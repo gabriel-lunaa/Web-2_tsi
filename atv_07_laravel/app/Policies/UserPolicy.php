@@ -8,14 +8,14 @@ class UserPolicy
 {
     public function before(User $user): bool|null
     {
-        if ($user->role === 'admin') {
+        if ($user->isAdmin()) {
             return true;
         }
 
         return null;
     }
 
-    public function update(User $user): bool
+    public function update(User $user, User $model): bool
     {
         return false;
     }

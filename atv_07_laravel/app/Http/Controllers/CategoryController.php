@@ -17,9 +17,7 @@ class CategoryController extends Controller
     // Mostra o formulário para criar uma nova categoria
     public function create()
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('create', Category::class);
 
         return view('categories.create');
     }
@@ -27,9 +25,7 @@ class CategoryController extends Controller
     // Armazena uma nova categoria no banco de dados
     public function store(Request $request)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('create', Category::class);
 
         $request->validate([
             'name' => 'required|string|unique:categories|max:255',
@@ -50,9 +46,7 @@ class CategoryController extends Controller
     // Mostra o formulário para editar uma categoria existente
     public function edit(Category $category)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('update', $category);
 
         return view('categories.edit', compact('category'));
     }
@@ -60,9 +54,7 @@ class CategoryController extends Controller
     // Atualiza uma categoria no banco de dados
     public function update(Request $request, Category $category)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('update', $category);
 
         $request->validate([
             'name' => 'required|string|unique:categories,name,' . $category->id . '|max:255',
@@ -77,9 +69,7 @@ class CategoryController extends Controller
     // Remove uma categoria do banco de dados
     public function destroy(Category $category)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('delete', $category); 
         
         $category->delete();
 

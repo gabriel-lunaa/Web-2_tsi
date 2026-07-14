@@ -21,42 +21,37 @@ class BookController extends Controller
 
     public function createWithId()
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('create', Book::class);
+
         return view('books.create-id');
     }
 
     public function storeWithId(Request $request)
-{
-        if (auth()->user()->isCliente()) {
-            abort(403);
+   {
+        $this->authorize('create', Book::class);
+            
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'publisher_id' => 'required|exists:publishers,id',
+            'author_id' => 'required|exists:authors,id',
+            'category_id' => 'required|exists:categories,id',
+            'pages' => 'required|integer',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($request->hasFile('cover_image')) {
+            $path = $request->file('cover_image')->store('covers', 'public');
+            $validated['cover_image'] = $path;
         }
-        
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'publisher_id' => 'required|exists:publishers,id',
-        'author_id' => 'required|exists:authors,id',
-        'category_id' => 'required|exists:categories,id',
-        'pages' => 'required|integer',
-        'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
 
-    if ($request->hasFile('cover_image')) {
-        $path = $request->file('cover_image')->store('covers', 'public');
-        $validated['cover_image'] = $path;
-    }
+        Book::create($validated);
 
-    Book::create($validated);
-
-    return redirect()->route('books.index')->with('success', 'Livro criado com sucesso.');
+        return redirect()->route('books.index')->with('success', 'Livro criado com sucesso.');
 }
 
     public function createWithSelect()
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('create', Book::class);
 
         return view('books.create-select', [
             'publishers' => Publisher::all(),
@@ -67,9 +62,7 @@ class BookController extends Controller
 
     public function storeWithSelect(Request $request)
 {
-    if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+    $this->authorize('create', Book::class);
 
     $validated = $request->validate([
         'title' => 'required|string|max:255',
@@ -92,9 +85,7 @@ class BookController extends Controller
 
     public function edit(Book $book)
     {
-        if (auth()->user()->isCliente()) {
-            abort(403);
-        }
+        $this->authorize('update', $book);
 
         return view('books.edit', [
             'book' => $book,
@@ -105,33 +96,31 @@ class BookController extends Controller
     }
 
     public function update(Request $request, Book $book)
-{
-    if (auth()->user()->isCliente()) {
-            abort(403);
+    {
+        $this->authorize('update', $book);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'publisher_id' => 'required|exists:publishers,id',
+            'author_id' => 'required|exists:authors,id',
+            'category_id' => 'required|exists:categories,id',
+            'pages' => 'required|integer',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($request->hasFile('cover_image')) {
+
+            if ($book->cover_image) {
+                Storage::disk('public')->delete($book->cover_image);
+            }
+
+            $path = $request->file('cover_image')->store('covers', 'public');
+            $validated['cover_image'] = $path;
         }
 
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'publisher_id' => 'required|exists:publishers,id',
-        'author_id' => 'required|exists:authors,id',
-        'category_id' => 'required|exists:categories,id',
-        'pages' => 'required|integer',
-        'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
+        $book->update($validated);
 
-    if ($request->hasFile('cover_image')) {
-
-        if ($book->cover_image) {
-            Storage::disk('public')->delete($book->cover_image);
-        }
-
-        $path = $request->file('cover_image')->store('covers', 'public');
-        $validated['cover_image'] = $path;
-    }
-
-    $book->update($validated);
-
-    return redirect()->route('books.index')->with('success', 'Livro atualizado com sucesso.');
+        return redirect()->route('books.index')->with('success', 'Livro atualizado com sucesso.');
 }
 
     public function show(Book $book)
@@ -144,17 +133,15 @@ class BookController extends Controller
     }
 
     public function destroy(Book $book)
-{
-    if (auth()->user()->isCliente()) {
-            abort(403);
+    {
+        $this->authorize('delete', $book);
+
+        if ($book->cover_image) {
+            Storage::disk('public')->delete($book->cover_image);
         }
 
-    if ($book->cover_image) {
-        Storage::disk('public')->delete($book->cover_image);
+        $book->delete();
+
+        return redirect()->route('books.index')->with('success', 'Livro excluído com sucesso.');
     }
-
-    $book->delete();
-
-    return redirect()->route('books.index')->with('success', 'Livro excluído com sucesso.');
-}
 }

@@ -20,18 +20,14 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403);
-        }
+        $this->authorize('update', $user);
 
         return view('users.edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403);
-        }
+        $this->authorize('update', $user);
 
         $user->update($request->only('name', 'email', 'role'));
 
